@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>splitwise but make it chaos 💸</title>
+<style>
+  @font-face {
+    font-family: 'system-display';
+    src: local('Arial Black');
+  }
+
+  :root{
+    --pink: #ff3fa4;
+    --lime: #d4ff3f;
+    --violet: #6a3fff;
+    --violet-deep: #2e1065;
+    --ink: #14121f;
+    --cream: #fff6ec;
+    --orange: #ff7a3f;
+    --border: 4px;
+    --shadow-off: 6px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--cream);
+    background-image:
+      radial-gradient(circle at 90% 5%, rgba(212,255,63,0.35) 0, transparent 40%),
+      radial-gradient(circle at 5% 90%, rgba(106,63,255,0.25) 0, transparent 40%);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--ink);
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .wrap{ max-width: 720px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  h1{
+    font-family: Arial, sans-serif;
+    font-weight: 900;
+    font-size: clamp(30px, 7vw, 46px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-transform: lowercase;
+  }
+  h1 span.hl{
+    background: var(--lime);
+    padding: 0 8px;
+    border: var(--border) solid var(--ink);
+    display: inline-block;
+    transform: rotate(-2deg);
+    box-shadow: var(--shadow-off) var(--shadow-off) 0 var(--ink);
+  }
+
+  .tag{
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--violet-deep);
+    margin-top: 6px;
+  }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background: #fff;
+    border: var(--border) solid var(--ink);
+    border-radius: 22px;
+    box-shadow: var(--shadow-off) var(--shadow-off) 0 var(--ink);
+    padding: 20px;
+    margin-bottom: 22px;
+  }
+
+  .card h2{
+    margin: 0 0 14px 0;
+    font-size: 20px;
+    font-weight: 900;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* ---------- Family setup ---------- */
+  #memberChips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 12px; }
+  .chip{
+    background: var(--violet);
+    color:#fff;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 800;
+    font-size: 14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .chip button{
+    background:none; border:none; color:#fff; font-weight:900;
+    cursor:pointer; font-size:14px; line-height:1; padding:0;
+  }
+
+  .row{ display:flex; gap:10px; flex-wrap: wrap; }
+  .row > *{ flex: 1 1 140px; }
+
+  input, select{
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    background: var(--cream);
+    color: var(--ink);
+    width: 100%;
+  }
+  input::placeholder{ color: #8a8398; font-weight: 600; }
+  input:focus, select:focus{ outline: 3px solid var(--pink); outline-offset: 1px; }
+
+  .btn{
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 15px;
+    padding: 13px 18px;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .08s ease, box-shadow .08s ease;
+    text-transform: lowercase;
+  }
+  .btn:active{ transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn-pink{ background: var(--pink); color:#fff; }
+  .btn-lime{ background: var(--lime); color: var(--ink); }
+  .btn-ghost{ background:#fff; color: var(--ink); }
+  .btn-block{ width:100%; margin-top: 12px; }
+
+  /* ---------- Budget cap ---------- */
+  .cap-bar-bg{
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    height: 22px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .cap-bar-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--lime), var(--pink));
+    width: 0%;
+    transition: width .4s ease;
+  }
+  .cap-meta{ display:flex; justify-content:space-between; font-size:13px; font-weight:800; margin-top:6px; }
+
+  /* ---------- Leaderboard ---------- */
+  .lb-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 10px 0;
+    border-bottom: 2px dashed #ddd3c8;
+  }
+  .lb-item:last-child{ border-bottom:none; }
+  .lb-rank{
+    font-weight:900; font-size: 20px; width: 28px; text-align:center;
+  }
+  .lb-avatar{
+    width:40px; height:40px; border-radius: 50%;
+    border: 3px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; color:#fff; font-size:15px;
+    flex-shrink:0;
+  }
+  .lb-body{ flex:1; min-width:0; }
+  .lb-name{ font-weight:800; font-size:15px; display:flex; align-items:center; gap:6px;}
+  .lb-bar-bg{ background:#f1ece1; border-radius:999px; height:10px; margin-top:5px; overflow:hidden; }
+  .lb-bar-fill{ height:100%; border-radius:999px; }
+  .lb-amount{ font-family: 'Courier New', monospace; font-weight:800; font-size:15px; white-space:nowrap; }
+  .badge{ font-size: 13px; }
+
+  /* ---------- Category bars ---------- */
+  .cat-row{ margin-bottom: 12px; }
+  .cat-label{ display:flex; justify-content:space-between; font-size:14px; font-weight:800; margin-bottom:4px; }
+  .cat-bar-bg{ background:#f1ece1; border: 2px solid var(--ink); border-radius: 8px; height:16px; overflow:hidden; }
+  .cat-bar-fill{ height:100%; }
+
+  /* ---------- Feed ---------- */
+  .feed-item{
+    display:flex; align-items:center; gap:12px;
+    padding: 12px 0; border-bottom: 2px dashed #ddd3c8;
+  }
+  .feed-item:last-child{ border-bottom: none; }
+  .feed-emoji{
+    width: 38px; height:38px; border-radius: 10px;
+    background: var(--lime); border: 3px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    flex-shrink:0;
+  }
+  .feed-main{ flex:1; min-width:0; }
+  .feed-title{ font-weight:800; font-size:14.5px; }
+  .feed-sub{ font-size:12.5px; color:#77708a; font-weight:600; }
+  .feed-amount{ font-family:'Courier New', monospace; font-weight:900; font-size:15px; }
+  .feed-del{
+    background:none; border:none; color:#c9c2d6; font-size:18px; cursor:pointer; font-weight:900;
+    padding: 0 2px;
+  }
+  .feed-del:hover{ color: var(--pink); }
+
+  .empty{
+    text-align:center; padding: 26px 10px; color:#8a8398; font-weight:700; font-size:14px;
+  }
+  .empty .big{ font-size:34px; display:block; margin-bottom:6px; }
+
+  select#expenseCategory{ background:#fff; }
+
+  footer{ text-align:center; font-size:12px; color:#a89fb8; font-weight:700; margin: 26px 0 6px; }
+
+  @media (max-width: 480px){
+    .row > *{ flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>family <span class="hl">money</span><br>tea ☕💸</h1>
+      <div class="tag" id="syncStatus">connecting...</div>
+    </div>
+  </header>
+
+  <!-- FAMILY CODE -->
+  <div class="card" id="familyCodeCard">
+    <h2>🔑 your family code</h2>
+    <p style="font-size:14px; font-weight:600; color:#544d63; margin-top:-6px;">
+      everyone in your family should enter the <strong>same code</strong> — that's what links your data together. make one up, like <em>smith2026</em>.
+    </p>
+    <div class="row">
+      <input type="text" id="familyCodeInput" placeholder="e.g. smith2026">
+      <button class="btn btn-lime" onclick="joinFamily()" style="flex:0 0 auto;">join / create</button>
+    </div>
+  </div>
+
+  <!-- FAMILY SETUP -->
+  <div class="card">
+    <h2>👨‍👩‍👧‍👦 the squad</h2>
+    <div id="memberChips"></div>
+    <div class="row">
+      <input type="text" id="memberInput" placeholder="add a family member...">
+      <button class="btn btn-lime" onclick="addMember()" style="flex:0 0 auto;">+ add</button>
+    </div>
+  </div>
+
+  <!-- ADD EXPENSE -->
+  <div class="card">
+    <h2>💅 log a spend</h2>
+    <div class="row">
+      <select id="expenseWho"></select>
+      <input type="number" id="expenseAmount" placeholder="amount ($)" min="0" step="0.01">
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <select id="expenseCategory">
+        <option>🍔 food</option>
+        <option>🏠 rent/bills</option>
+        <option>🚗 transport</option>
+        <option>🎮 fun</option>
+        <option>👕 shopping</option>
+        <option>💊 health</option>
+        <option>✨ other</option>
+      </select>
+      <input type="text" id="expenseNote" placeholder="what for? (optional)">
+    </div>
+    <button class="btn btn-pink btn-block" onclick="addExpense()">add expense 🔥</button>
+  </div>
+
+  <!-- MONTHLY CAP -->
+  <div class="card">
+    <h2>🎯 monthly budget cap</h2>
+    <div class="row">
+      <input type="number" id="capInput" placeholder="set family budget cap ($)" min="0" step="1">
+      <button class="btn btn-ghost" onclick="setCap()" style="flex:0 0 auto;">save</button>
+    </div>
+    <div class="cap-bar-bg"><div class="cap-bar-fill" id="capFill"></div></div>
+    <div class="cap-meta"><span id="capSpent">$0 spent</span><span id="capTarget">no cap set</span></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="card">
+    <h2>🏆 the spend-off</h2>
+    <div id="leaderboard"></div>
+  </div>
+
+  <!-- CATEGORY BREAKDOWN -->
+  <div class="card">
+    <h2>📊 where it's going</h2>
+    <div id="categoryBreakdown"></div>
+  </div>
+
+  <!-- FEED -->
+  <div class="card">
+    <h2>🧾 the receipts</h2>
+    <div id="feed"></div>
+  </div>
+
+  <footer>made with chaotic good energy · your data stays on this device</footer>
+</div>
+
+<!--
+  ============================================================
+  STEP 1: Create a free Firebase project at https://console.firebase.google.com
+  STEP 2: In your project, go to "Build > Firestore Database" and create one
+          (start in TEST MODE for now).
+  STEP 3: Go to Project Settings > General > "Your apps" > click the </> (web) icon
+          to register a web app, then copy the firebaseConfig object it gives you.
+  STEP 4: Paste it below, replacing the placeholder values.
+  ============================================================
+-->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+// 👇 REPLACE THIS WITH YOUR OWN FIREBASE CONFIG (from Step 3 above)
+const firebaseConfig = {
+  apiKey: "AIzaSyCTLO0Ry5ZZfNHqoQlej7HexnPB8SP50oA",
+  authDomain: "family-tracker-cb121.firebaseapp.com",
+  projectId: "family-tracker-cb121",
+  storageBucket: "family-tracker-cb121.firebasestorage.app",
+  messagingSenderId: "206996258086",
+  appId: "1:206996258086:web:cabbbe7ffbf4fc000595e7"
+};
+
+let db = null;
+let firebaseReady = false;
+try{
+  if(firebaseConfig.apiKey !== "YOUR_API_KEY"){
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    firebaseReady = true;
+  }
+}catch(e){ console.error('Firebase init failed', e); }
+
+let familyCode = localStorage.getItem('genzBudgetFamilyCode') || '';
+let unsubscribe = null;
+
+  '🍔 food':'🍔','🏠 rent/bills':'🏠','🚗 transport':'🚗','🎮 fun':'🎮',
+  '👕 shopping':'👕','💊 health':'💊','✨ other':'✨'
+};
+const AVATAR_COLORS = ['#ff3fa4','#6a3fff','#ff7a3f','#2ec4b6','#ff5964','#8338ec','#3f8cff'];
+
+let state = { members: [], expenses: [], cap: null };
+
+function joinFamily(){
+  const code = document.getElementById('familyCodeInput').value.trim().toLowerCase().replace(/\s+/g,'-');
+  if(!code){ alert('type a family code first, bestie'); return; }
+  familyCode = code;
+  localStorage.setItem('genzBudgetFamilyCode', code);
+  connectToFamily();
+}
+
+function connectToFamily(){
+  const statusEl = document.getElementById('syncStatus');
+  if(!familyCode){
+    statusEl.textContent = 'enter a family code below to start syncing';
+    return;
+  }
+  document.getElementById('familyCodeInput').value = familyCode;
+
+  if(!firebaseReady){
+    statusEl.textContent = '⚠️ demo mode (no sync) — add your Firebase config to enable real sharing';
+    // fall back to local-only so the app still works while testing
+    try{
+      const raw = localStorage.getItem('genzBudgetTracker_' + familyCode);
+      if(raw) state = JSON.parse(raw);
+    }catch(e){}
+    renderAll();
+    return;
+  }
+
+  statusEl.textContent = '🟢 synced live — code: ' + familyCode;
+  if(unsubscribe) unsubscribe();
+
+  const docRef = db.collection('families').doc(familyCode);
+  unsubscribe = docRef.onSnapshot(snap => {
+    if(snap.exists){
+      state = snap.data();
+      if(!state.members) state.members = [];
+      if(!state.expenses) state.expenses = [];
+    } else {
+      state = { members: [], expenses: [], cap: null };
+      docRef.set(state);
+    }
+    renderAll();
+  }, err => {
+    console.error(err);
+    statusEl.textContent = '⚠️ sync error — check your Firebase setup';
+  });
+}
+
+function save(){
+  if(firebaseReady && familyCode){
+    db.collection('families').doc(familyCode).set(state);
+  } else if(familyCode){
+    localStorage.setItem('genzBudgetTracker_' + familyCode, JSON.stringify(state));
+    renderAll();
+  }
+}
+
+function colorFor(name){
+  let hash = 0;
+  for(let i=0;i<name.length;i++) hash = name.charCodeAt(i) + ((hash<<5)-hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function addMember(){
+  const input = document.getElementById('memberInput');
+  const name = input.value.trim();
+  if(!name) return;
+  if(state.members.includes(name)){ input.value=''; return; }
+  state.members.push(name);
+  input.value = '';
+  save();
+  renderAll();
+}
+
+function removeMember(name){
+  state.members = state.members.filter(m => m !== name);
+  save();
+  renderAll();
+}
+
+function addExpense(){
+  const who = document.getElementById('expenseWho').value;
+  const amountEl = document.getElementById('expenseAmount');
+  const amount = parseFloat(amountEl.value);
+  const category = document.getElementById('expenseCategory').value;
+  const noteEl = document.getElementById('expenseNote');
+  const note = noteEl.value.trim();
+
+  if(!who){ alert('add a family member first, bestie 👀'); return; }
+  if(!amount || amount <= 0){ alert('enter a real amount pls'); return; }
+
+  state.expenses.unshift({
+    id: Date.now(),
+    who, amount, category, note,
+    date: new Date().toISOString()
+  });
+  amountEl.value = '';
+  noteEl.value = '';
+  save();
+  renderAll();
+}
+
+function deleteExpense(id){
+  state.expenses = state.expenses.filter(e => e.id !== id);
+  save();
+  renderAll();
+}
+
+function setCap(){
+  const val = parseFloat(document.getElementById('capInput').value);
+  state.cap = (val && val > 0) ? val : null;
+  save();
+  renderAll();
+}
+
+function fmt(n){
+  return '$' + n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function totalsByMember(){
+  const totals = {};
+  state.members.forEach(m => totals[m] = 0);
+  state.expenses.forEach(e => { totals[e.who] = (totals[e.who]||0) + e.amount; });
+  return totals;
+}
+
+function totalsByCategory(){
+  const totals = {};
+  state.expenses.forEach(e => { totals[e.category] = (totals[e.category]||0) + e.amount; });
+  return totals;
+}
+
+function renderMembers(){
+  const chips = document.getElementById('memberChips');
+  const select = document.getElementById('expenseWho');
+  if(state.members.length === 0){
+    chips.innerHTML = '<span style="font-size:13px; font-weight:600; color:#8a8398;">no one added yet — add your people below 👇</span>';
+  } else {
+    chips.innerHTML = state.members.map(m =>
+      `<span class="chip" style="background:${colorFor(m)}">${m} <button onclick="removeMember('${m.replace(/'/g,"\\'")}')">×</button></span>`
+    ).join('');
+  }
+  select.innerHTML = state.members.length
+    ? state.members.map(m => `<option value="${m}">${m}</option>`).join('')
+    : '<option value="">add a member first</option>';
+}
+
+function renderCap(){
+  const totalSpent = state.expenses.reduce((s,e) => s + e.amount, 0);
+  const fill = document.getElementById('capFill');
+  const spentEl = document.getElementById('capSpent');
+  const targetEl = document.getElementById('capTarget');
+  spentEl.textContent = fmt(totalSpent) + ' spent';
+  if(state.cap){
+    const pct = Math.min(100, (totalSpent / state.cap) * 100);
+    fill.style.width = pct + '%';
+    targetEl.textContent = 'cap: ' + fmt(state.cap) + (totalSpent > state.cap ? ' 🚨 over budget' : '');
+    document.getElementById('capInput').placeholder = 'current cap: ' + fmt(state.cap);
+  } else {
+    fill.style.width = '0%';
+    targetEl.textContent = 'no cap set';
+  }
+}
+
+function renderLeaderboard(){
+  const el = document.getElementById('leaderboard');
+  const totals = totalsByMember();
+  const entries = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+
+  if(state.members.length === 0){
+    el.innerHTML = '<div class="empty"><span class="big">🫥</span>add family members to see the spend-off</div>';
+    return;
+  }
+
+  const max = Math.max(1, ...entries.map(e => e[1]));
+
+  el.innerHTML = entries.map(([name, amt], i) => {
+    let badge = '';
+    if(entries.length > 1 && amt === Math.max(...entries.map(e=>e[1])) && amt > 0) badge = '💸 big spender';
+    else if(entries.length > 1 && amt === Math.min(...entries.map(e=>e[1]))) badge = '👑 saving king/queen';
+    const pct = (amt / max) * 100;
+    const initials = name.slice(0,2).toUpperCase();
+    return `<div class="lb-item">
+      <div class="lb-rank">#${i+1}</div>
+      <div class="lb-avatar" style="background:${colorFor(name)}">${initials}</div>
+      <div class="lb-body">
+        <div class="lb-name">${name} ${badge ? `<span class="badge">${badge}</span>` : ''}</div>
+        <div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${pct}%; background:${colorFor(name)}"></div></div>
+      </div>
+      <div class="lb-amount">${fmt(amt)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCategories(){
+  const el = document.getElementById('categoryBreakdown');
+  const totals = totalsByCategory();
+  const entries = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+
+  if(entries.length === 0){
+    el.innerHTML = '<div class="empty"><span class="big">📭</span>no spends logged yet</div>';
+    return;
+  }
+
+  const max = Math.max(...entries.map(e => e[1]));
+  const colors = ['#ff3fa4','#6a3fff','#d4ff3f','#ff7a3f','#2ec4b6','#ff5964','#8338ec'];
+
+  el.innerHTML = entries.map(([cat, amt], i) => {
+    const pct = (amt / max) * 100;
+    return `<div class="cat-row">
+      <div class="cat-label"><span>${cat}</span><span>${fmt(amt)}</span></div>
+      <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%; background:${colors[i % colors.length]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderFeed(){
+  const el = document.getElementById('feed');
+  if(state.expenses.length === 0){
+    el.innerHTML = '<div class="empty"><span class="big">🧾</span>log your first expense above</div>';
+    return;
+  }
+  el.innerHTML = state.expenses.map(e => {
+    const emoji = CATEGORY_EMOJI[e.category] || '✨';
+    const d = new Date(e.date);
+    const dateStr = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    return `<div class="feed-item">
+      <div class="feed-emoji">${emoji}</div>
+      <div class="feed-main">
+        <div class="feed-title">${e.who} ${e.note ? '— ' + escapeHtml(e.note) : ''}</div>
+        <div class="feed-sub">${e.category.replace(/^\S+\s/,'')} · ${dateStr}</div>
+      </div>
+      <div class="feed-amount">${fmt(e.amount)}</div>
+      <button class="feed-del" onclick="deleteExpense(${e.id})" title="delete">×</button>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function renderAll(){
+  renderMembers();
+  renderCap();
+  renderLeaderboard();
+  renderCategories();
+  renderFeed();
+}
+
+document.getElementById('memberInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') addMember();
+});
+document.getElementById('capInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') setCap();
+});
+document.getElementById('familyCodeInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') joinFamily();
+});
+
+connectToFamily();
+</script>
+</body>
+</html>
